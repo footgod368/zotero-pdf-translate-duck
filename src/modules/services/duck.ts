@@ -102,18 +102,18 @@ export const Duck: TranslateService = {
     // Get saved settings
     const option1 = getPref("options1");
 
-// curl 'http://1.116.120.75:8083/v1/translate?text=insist' \
-//   -H 'Accept: application/json, text/plain, */*' \
-//   -H 'Accept-Language: zh-CN,zh;q=0.9,en;q=0.8' \
-//   -H 'Cache-Control: no-cache' \
-//   -H 'Connection: keep-alive' \
-//   -H 'Origin: http://1.116.120.75:8081' \
-//   -H 'Pragma: no-cache' \
-//   -H 'Referer: http://1.116.120.75:8081/' \
-//   -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36' \
-//   --insecure
+    // curl 'http://1.116.120.75:8083/v1/translate?text=insist' \
+    //   -H 'Accept: application/json, text/plain, */*' \
+    //   -H 'Accept-Language: zh-CN,zh;q=0.9,en;q=0.8' \
+    //   -H 'Cache-Control: no-cache' \
+    //   -H 'Connection: keep-alive' \
+    //   -H 'Origin: http://1.116.120.75:8081' \
+    //   -H 'Pragma: no-cache' \
+    //   -H 'Referer: http://1.116.120.75:8081/' \
+    //   -H 'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36' \
+    //   --insecure
     const { raw: text } = data;
-    const APIURL = "http://1.116.120.75:8083/v1/translate"
+    const APIURL = "http://1.116.120.75:8083/v1/translate";
 
     // Send request to translation API
     const xhr = await Zotero.HTTP.request("GET", `${APIURL}?text=${text}`, {
@@ -129,13 +129,13 @@ export const Duck: TranslateService = {
       throw `Request error: ${xhr?.status}`;
     }
 
-    // Handle API errors
-    if (xhr.response.Code !== "200") {
-      throw `Service error: ${xhr.response.Code}:${xhr.response.Message}`;
-    }
+    // // Handle API errors
+    // if (xhr.response.Code !== "200") {
+    //   throw `Service error: ${xhr.response.Code}:${xhr.response.Message}`;
+    // }
 
     // Save the translation result
-    data.result = xhr.response;
+    data.result = formatTranslationResult(xhr.response);
   },
 
   // === Optional: custom settings in preferences ===
@@ -155,3 +155,57 @@ export const Duck: TranslateService = {
    * requireExternalConfig: true;
    */
 };
+
+/**
+ * Format translation result to user-readable string
+ */
+function formatTranslationResult(response: any): string {
+  const lines: string[] = [];
+
+  // Pronunciation
+  if (response.ukphone || response.usphone) {
+    const pronounceParts = [];
+    if (response.ukphone) pronounceParts.push(`英: ${response.ukphone}`);
+    if (response.usphone) pronounceParts.push(`美: ${response.usphone}`);
+    lines.push(pronounceParts.join(" "));
+  }
+
+  // Translations
+  if (response.translations?.length) {
+    lines.push(`翻译: ${response.translations.join("; ")}`);
+  }
+
+  // Word forms
+  if (response.word_forms?.length) {
+    lines.push(`词形变化: ${response.word_forms.join("; ")}`);
+  }
+
+  // Etymologies
+  if (response.etymologies?.length) {
+    lines.push("词源:");
+    response.etymologies.forEach((etym: any, index: number) => {
+      let etymLine = `  ${index + 1}. ${etym.value}`;
+      if (etym.desc) etymLine += ` (${etym.desc})`;
+      lines.push(etymLine);
+    });
+  }
+
+  // Example sentences
+  if (response.eg_sentences?.length) {
+    lines.push("例句:");
+    response.eg_sentences.forEach((eg: any) => {
+      lines.push(`  • ${eg.sentence}`);
+      lines.push(`    → ${eg.translation}`);
+    });
+  }
+
+  // Discrimination
+  if (response.discrimination?.length) {
+    lines.push("词语辨析:");
+    response.discrimination.forEach((discrim: any) => {
+      lines.push(`  • ${discrim.headword}: ${discrim.usage}`);
+    });
+  }
+
+  return lines.join("\n\n");
+}

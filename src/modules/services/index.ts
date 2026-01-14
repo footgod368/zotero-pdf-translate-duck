@@ -62,6 +62,7 @@ const register: TranslateService[] = [
   DeeplPro,
   DeepLCustom,
   DeepLX,
+  Duck,
   FreeDictionaryAPI,
   Gemini,
   Google,
