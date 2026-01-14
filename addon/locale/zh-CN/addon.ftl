@@ -1,3 +1,4 @@
+service-duck=小鸭词典
 service-huoshanweb=火山网页翻译
 service-tencenttransmart=腾讯TranSmart
 service-huoshan=火山翻译

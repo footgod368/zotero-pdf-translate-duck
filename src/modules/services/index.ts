@@ -45,6 +45,7 @@ import { YoudaoZhiyun } from "./youdaozhiyun";
 import { YoudaoZhiyunLLM } from "./youdaozhiyunllm";
 import { DeepLCustom } from "./deeplcustom";
 import { DeepLX } from "./deeplx";
+import { Duck } from "./duck";
 
 const register: TranslateService[] = [
   Aliyun,

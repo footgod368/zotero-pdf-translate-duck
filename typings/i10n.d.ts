@@ -143,6 +143,7 @@ export type FluentMessageId =
   | 'service-dialog-help'
   | 'service-dialog-save'
   | 'service-dialog-title'
+  | 'service-duck'
   | 'service-errorPrefix'
   | 'service-freedictionaryapi'
   | 'service-gemini'

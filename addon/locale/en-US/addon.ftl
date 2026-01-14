@@ -1,3 +1,4 @@
+service-duck=Duck
 service-huoshanweb=Volcengine Web
 service-tencenttransmart=Tencent Transmart
 service-huoshan=Huoshan
