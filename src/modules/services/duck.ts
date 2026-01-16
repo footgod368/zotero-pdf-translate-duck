@@ -102,6 +102,7 @@ export const Duck: TranslateService = {
     // Get saved settings
     const option1 = getPref("options1");
 
+
     // curl 'http://1.116.120.75:8083/v1/translate?text=insist' \
     //   -H 'Accept: application/json, text/plain, */*' \
     //   -H 'Accept-Language: zh-CN,zh;q=0.9,en;q=0.8' \
